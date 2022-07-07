@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
+    "serve": "vue-cli-service serve  --sourcemap",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "electron:build": "vue-cli-service electron:build",
@@ -14,7 +14,9 @@
   "main": "background.js",
   "dependencies": {
     "core-js": "^3.8.3",
+    "crypto-js": "^4.1.1",
     "element-plus": "^2.2.8",
+    "fs": "^0.0.1-security",
     "vue": "^3.2.13"
   },
   "devDependencies": {
