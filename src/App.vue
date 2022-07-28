@@ -16,9 +16,9 @@
 </template>
 
 <script>
-// window.require('electron')
 const fs = window.require('fs')
 const path = window.require('path')
+const FileCrypt = window.require("file-aes-crypt");
 
 export default {
   data() {
@@ -27,6 +27,8 @@ export default {
   methods: {
     //上传文件的事件
     uploadFile(item) {
+      const fc = new FileCrypt('Aaa00123');
+      fc.encrypt("package.json", "package.json-kkkkkk");
       console.log('文件上传中........')
       //上传文件的需要formdata类型;所以要转
       let fileName;
