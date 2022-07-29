@@ -32,7 +32,7 @@ export default {
   methods: {
     //上传文件的事件
     async uploadFile(item) {
-      this.$message({message:"文件加密中...",duration:0},);
+      this.$notify({message:"文件加密中...",duration:0},);
       const secret = this.uuid()
       const fc = new FileCrypt(secret);
 
@@ -40,14 +40,16 @@ export default {
       let fileName = path.basename(filePath)
       let encFileName = fileName + ".enc"
       await fc.encrypt(filePath, encFileName);
+      this.$notify.closeAll()
 
-      this.$message("开始上传...");
+      this.$notify({message:"文件上传中...",duration:0},);
+      // this.$message("开始上传...");
       fs.readFile(encFileName, {encoding: "utf-8"}, async function (err, fr) {
         if (err) {
           console.log(err);
         } else {
           const resp = await axios.put('https://transfer.sh/' + fileName, fr);
-          console.log(resp.data)
+          this.$notify({message:`上传完成:${resp.data}`,duration:0},);
         }
       });
     },
