@@ -47,7 +47,12 @@ export default {
       let encFileName = fileName + ".enc"
       await fc.encrypt(filePath, encFileName);
       this.$notify.closeAll()
-      this.$notify({message: "文件上传中...", duration: 0},);
+      this.$notify({
+        title: '文件上传中',
+        message: `【${fileName}】上传中...`,
+        type: 'success',
+        duration: 0
+      },);
       // this.$message("开始上传...");
       fs.readFile(encFileName, async (err, fr) => {
         if (err) {
@@ -60,7 +65,7 @@ export default {
           clipboard.writeText(dLink)
           // this.$notify({message:`${fileName}上传完成`,duration:0},);
           this.$notify({
-            title: `${fileName}上传完成`,
+            title: `【${fileName}】上传完成`,
             message: '下载链接已复制到剪切板~',
             type: 'success',
             duration: 0
@@ -115,7 +120,14 @@ export default {
             }
           });
           // 下载
-          let stream = fs.createWriteStream(path.join(DOWNLOAD_DIR, fileName + '.enc'), {encoding: 'utf-8'});
+          let decodeFileName = decodeURI(fileName)
+          let stream = fs.createWriteStream(path.join(DOWNLOAD_DIR, decodeFileName + '.enc'), {encoding: 'utf-8'});
+          this.$notify({
+            title: `下载中`,
+            message: `【${decodeFileName}】下载中...`,
+            type: 'warning',
+            duration: 0
+          },);
           request({
             url: `https://transfer.sh/get/${fileKey}/${fileName}`,
             method: 'GET'
@@ -131,17 +143,18 @@ export default {
                   },);
                 }
                 stream.close();
+                this.$notify.closeAll()
                 //  解密
                 const fc = new FileCrypt(secret);
-                fc.decrypt(path.join(DOWNLOAD_DIR, fileName + '.enc'), path.join(DOWNLOAD_DIR, fileName))
+                fc.decrypt(path.join(DOWNLOAD_DIR, decodeFileName + '.enc'), path.join(DOWNLOAD_DIR, decodeFileName))
                 this.$notify({
                   title: "文件下载成功",
                   message: '文件下载成功',
                   type: 'success',
                   duration: 5
                 },);
-                this.rmFile(path.join(DOWNLOAD_DIR, fileName + '.enc'))
-                shell.showItemInFolder(path.resolve(path.join(DOWNLOAD_DIR, fileName)));
+                this.rmFile(path.join(DOWNLOAD_DIR, decodeFileName + '.enc'))
+                shell.showItemInFolder(path.resolve(path.join(DOWNLOAD_DIR, decodeFileName)));
               });
         } catch (e) {
           this.$notify({
