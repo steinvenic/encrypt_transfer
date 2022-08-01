@@ -20,6 +20,7 @@
     "file-aes-crypt": "^1.0.6",
     "fs": "^0.0.1-security",
     "path-browserify": "^1.0.1",
+    "request": "^2.88.2",
     "vue": "^3.2.13"
   },
   "devDependencies": {
