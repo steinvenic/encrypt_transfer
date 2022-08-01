@@ -10,13 +10,14 @@
       <upload-filled/>
     </el-icon>
     <div class="el-upload__text">
-      Drop file here or <em>click to upload</em>
-    </div>
-
-
+      拖拽上传或 <em>点击上传</em>
+    </div><br/><br/>
 
 
   </el-upload>
+  <div>
+    <el-button type="success" round @click="downLoad">下载剪切板中的文件</el-button>
+  </div>
 </template>
 
 <script>
@@ -24,6 +25,7 @@ const fs = window.require('fs')
 const path = window.require('path')
 const FileCrypt = window.require("file-aes-crypt");
 const axios = require('axios');
+const {clipboard} = window.require('electron')
 
 export default {
   data() {
@@ -32,7 +34,7 @@ export default {
   methods: {
     //上传文件的事件
     async uploadFile(item) {
-      this.$notify({message:"文件加密中...",duration:0},);
+      this.$notify({message: "文件加密中...", duration: 0},);
       const secret = this.uuid()
       const fc = new FileCrypt(secret);
 
@@ -42,24 +44,23 @@ export default {
       await fc.encrypt(filePath, encFileName);
       this.$notify.closeAll()
 
-      this.$notify({message:"文件上传中...",duration:0},);
+      this.$notify({message: "文件上传中...", duration: 0},);
       // this.$message("开始上传...");
-      fs.readFile(encFileName, {encoding: "utf-8"}, async (err, fr) =>{
+      fs.readFile(encFileName, {encoding: "utf-8"}, async (err, fr) => {
         if (err) {
           console.log(err);
         } else {
           const resp = await axios.put('https://transfer.sh/' + fileName, fr);
           console.log(resp)
           this.$notify.closeAll()
-          const dLink = resp.data+"/"+secret
-          const { clipboard } = window.require('electron')
+          const dLink = resp.data + "/" + secret
           clipboard.writeText(dLink)
           // this.$notify({message:`${fileName}上传完成`,duration:0},);
           this.$notify({
             title: `${fileName}上传完成`,
             message: '下载链接已复制到剪切板~',
             type: 'success',
-            duration:0
+            duration: 0
           },);
           // this.$notify({message:'下载链接已复制到剪切板~',duration:0},);
           this.rmFile(encFileName)
@@ -78,14 +79,45 @@ export default {
       var uuid = s.join("");
       return uuid;
     },
-    rmFile(fileName){
+    rmFile(fileName) {
       var filepath = fileName;
-      fs.unlink(filepath, function(err){
-        if(err){
+      fs.unlink(filepath, function (err) {
+        if (err) {
           throw err;
         }
-        console.log('文件:'+filepath+'删除成功！');
+        console.log('文件:' + filepath + '删除成功！');
       })
+    },
+    downLoad(){
+      let clickBroardText = clipboard.readText().toString()
+      console.log(typeof clickBroardText)
+      if (clickBroardText.startsWith('https://transfer.sh/')){
+        console.log('下载链接初步合规')
+        try {
+          let fileName = clickBroardText.split("/")[4]
+          let secret = clickBroardText.split("/")[5]
+          console.log(fileName)
+          console.log(secret)
+
+
+
+        }catch (e){
+          this.$notify({
+            title: "文件下载失败",
+            message: `错误的下载链接【${clickBroardText}】`,
+            type: 'warning',
+            duration: 0
+          },);
+        }
+
+      }else {
+        this.$notify({
+          title: "文件下载失败",
+          message: `错误的下载链接【${clickBroardText}】`,
+          type: 'warning',
+          duration: 0
+        },);
+      }
     }
   }
 }
