@@ -44,12 +44,25 @@ export default {
 
       this.$notify({message:"文件上传中...",duration:0},);
       // this.$message("开始上传...");
-      fs.readFile(encFileName, {encoding: "utf-8"}, async function (err, fr) {
+      fs.readFile(encFileName, {encoding: "utf-8"}, async (err, fr) =>{
         if (err) {
           console.log(err);
         } else {
           const resp = await axios.put('https://transfer.sh/' + fileName, fr);
-          this.$notify({message:`上传完成:${resp.data}`,duration:0},);
+          console.log(resp)
+          this.$notify.closeAll()
+          const dLink = resp.data+"/"+secret
+          const { clipboard } = window.require('electron')
+          clipboard.writeText(dLink)
+          // this.$notify({message:`${fileName}上传完成`,duration:0},);
+          this.$notify({
+            title: `${fileName}上传完成`,
+            message: '下载链接已复制到剪切板~',
+            type: 'success',
+            duration:0
+          },);
+          // this.$notify({message:'下载链接已复制到剪切板~',duration:0},);
+          this.rmFile(encFileName)
         }
       });
     },
@@ -64,6 +77,15 @@ export default {
       s[8] = s[13] = s[18] = s[23];
       var uuid = s.join("");
       return uuid;
+    },
+    rmFile(fileName){
+      var filepath = fileName;
+      fs.unlink(filepath, function(err){
+        if(err){
+          throw err;
+        }
+        console.log('文件:'+filepath+'删除成功！');
+      })
     }
   }
 }
