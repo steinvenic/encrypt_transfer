@@ -1,24 +1,22 @@
 <template>
-  <el-upload
-      class="upload-demo"
-      drag
-      action="https://transfer.sh/"
-      multiple
-      :http-request="uploadFile"
-  >
-    <el-icon class="el-icon--upload">
-      <upload-filled/>
-    </el-icon>
-    <div class="el-upload__text">
-      拖拽上传或 <em>点击上传</em>
-    </div>
-    <br/><br/>
+      <el-upload
+          class="upload-demo"
+          drag
+          action="https://transfer.sh/"
+          multiple
+          :http-request="uploadFile"
+      >
+        <el-icon class="el-icon--upload">
+          <upload-filled/>
+        </el-icon>
+        <div class="el-upload__text">
+          拖拽上传或 <em>点击上传</em>
+        </div>
+      </el-upload>
+  <br/><br/><br/>
+  <div><el-button type="success" round @click="downLoad" >下载剪切板中的文件</el-button></div>
 
 
-  </el-upload>
-  <div>
-    <el-button type="success" round @click="downLoad">下载剪切板中的文件</el-button>
-  </div>
 </template>
 
 <script>
@@ -179,3 +177,10 @@ export default {
   }
 }
 </script>
+<style>
+div{
+  text-align: center;
+}
+
+</style>
+
