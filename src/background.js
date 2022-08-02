@@ -1,4 +1,6 @@
 'use strict'
+import * as path from "path";
+
 app.commandLine.appendSwitch('disable-web-security');
 import {app, protocol, BrowserWindow} from 'electron'
 import {createProtocol} from 'vue-cli-plugin-electron-builder/lib'
@@ -16,6 +18,7 @@ async function createWindow() {
     const win = new BrowserWindow({
         width: 400,
         height: 500,
+        resizable: false,
         webPreferences: {
 
             // Use pluginOptions.nodeIntegration, leave this alone
@@ -23,9 +26,11 @@ async function createWindow() {
             enableRemoteModule: true, // 取消 Remote 模块警告
             nodeIntegration: true,
             contextIsolation: false,
-        }
+        },
+        icon: path.join(__dirname, './file-ext.ico'),
     })
-
+    // 隐藏菜单栏
+    win.setMenu(null)
     if (process.env.WEBPACK_DEV_SERVER_URL) {
         // Load the url of the dev server if in development mode
         await win.loadURL(process.env.WEBPACK_DEV_SERVER_URL)
