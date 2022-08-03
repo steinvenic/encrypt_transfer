@@ -7,11 +7,18 @@ module.exports = {
   },
   pluginOptions: {
     electronBuilder: {
-      // List native deps here if they don't work
-      externals: ['file-aes-crypt'],
-      // If you are using Yarn Workspaces, you may have multiple node_modules folders
-      // List them all here so that VCP Electron Builder can find them
-      nodeModulesPath: ['../../node_modules', './node_modules']
+      externals: ['file-aes-crypt','request'],
+      nodeModulesPath: ['../../node_modules', './node_modules'],
+      builderOptions: {
+        "productName": "文件加密传输",
+        win: {
+            icon: './public/icon.ico'
+        },
+        linux: {
+          icon: './public/icon.ico',
+          target: ["AppImage"]
+        }
+    }
     }
   }
 }

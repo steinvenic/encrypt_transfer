@@ -27,7 +27,7 @@ async function createWindow() {
             nodeIntegration: true,
             contextIsolation: false,
         },
-        icon: path.join(__dirname, './file-ext.ico'),
+        icon: `${__static}/icon.ico`
     })
     // 隐藏菜单栏
     win.setMenu(null)
