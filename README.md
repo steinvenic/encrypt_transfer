@@ -1,24 +1,37 @@
-# v05
+# vue3+electron+transfer.sh实现文件加密传输
 
-## Project setup
-```
-yarn install
-```
 
-### Compiles and hot-reloads for development
-```
-yarn serve
-```
 
-### Compiles and minifies for production
-```
-yarn build
-```
+## 大文件传输需求
 
-### Lints and fixes files
-```
-yarn lint
-```
+- 上、下行速度快
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+- 支持超大文件>5GB
+
+- 匿名下载
+- WEB实现
+- 文件流加密，服务器无法直接解密
+
+​		能实现上面的，找了一圈，貌似只有[wormhole](https://wormhole.app/)能满足,[作者的理念](https://wormhole.app/about)与我甚是相同，只不过传文件的时候，头会有点晕...
+
+## 实现步骤
+
+​		因为最近接触`electron`,本来想直接薅`wormhole`或`musetransfer`接口来实现，抓了下包，感觉有点复杂，所以还是直接用最为开放的`transfer.sh`来实现了。
+
+​		其实我主要是想熟悉一下`electron`在各平台的自动打包，所以该项目没有那么大的实际使用价值，里面还有不少的bug没有解决...
+
+#### 流程：
+
+（1）拦截要上传到`transfer.sh`的文件，使用随机秘钥加密后，继续上传
+
+（2）上传完成后，将返回的下载链接和随机秘钥进行拼接，并保存到剪切板
+
+（3）下载时，剪切板中如果有拼接好的下载链接，就会进行下载操作，下载完成后，进行解密，然后打开文件所在目录
+
+
+
+
+
+
+
+![image-20220817021403393](https://s2.loli.net/2022/08/17/LKdl4brOk7AzDxc.png)
